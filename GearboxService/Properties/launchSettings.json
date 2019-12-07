@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "GearboxService": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
