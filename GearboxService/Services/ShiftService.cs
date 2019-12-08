@@ -6,7 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Timers;
+using GearboxService.Models;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Configuration;
 
@@ -25,24 +27,42 @@ namespace GearboxService.Services
         {
             _config = config;
         }
+
         public void SubmitCodes(List<string> codes)
         {
             var authenticityToken = GetAuthenticityToken("https://shift.gearboxsoftware.com/home");
             GetSessionCookie(authenticityToken);
-            var shiftAddress = "https://shift.gearboxsoftware.com/entitlement_offer_codes?code={0}";
-            var responses = new Dictionary<string, string>();
+            var responses = new List<RedeemResponse>();
             using (HttpClient client = new HttpClient(_clientHandler, false))
             {
                 client.DefaultRequestHeaders.TryAddWithoutValidation("X-CSRF-Token", authenticityToken);
                 client.DefaultRequestHeaders.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://shift.gearboxsoftware.com/rewards");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Referer",
+                    "https://shift.gearboxsoftware.com/rewards");
                 foreach (var code in codes)
                 {
-                    var response = client.GetAsync(string.Format(shiftAddress, code)).Result;
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    responses.Add(code, content);
+                    responses.Add(SendCode(code, client).Result);
                 }
             }
+        }
+
+        private async Task<RedeemResponse> SendCode(string code, HttpClient client)
+        {
+            var shiftAddress = "https://shift.gearboxsoftware.com/entitlement_offer_codes?code={0}";
+            var response = client.GetAsync(string.Format(shiftAddress, code)).Result;
+            var content = response.Content.ReadAsStringAsync().Result;
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(60));
+                return await SendCode(code, client);
+            }
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            return new RedeemResponse()
+            {
+                ResponseCode = response.StatusCode.ToString(),
+                Content = content,
+                Code = code
+            };
         }
 
         private string GetAuthenticityToken(string url)
