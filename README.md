@@ -22,6 +22,16 @@ You can fill in:
   "TwitterAccount": "dgSHiFTCodesBL3",
 ```
 
+If you want emails, fill in the following information:
+```json
+  "SendEmails": true,                              // Required to receive emails
+  "SMTPAddress": "smtp.gmail.com",                 // Or other address
+  "SMTPPort": 587,                                 // Or other port
+  "LoggingFromEmail": "davidlazauskas1@gmail.com", // Email on SMTP address
+  "LoggingFromEmailPassword": "apjfdmgibwvfogge",  // Password for email on SMTP address
+  "LoggingToEmail": "davidlazauskas1@gmail.com"    // Where to send the emails
+```
+
 With this information filled in, run the script ```install.sh```
 
 Go to your services on windows and start ```Shift Redemption Service``` and optionally start the service on launch.
@@ -34,7 +44,6 @@ To uninstall the program, simply run the script ```uninstall.sh```
 Feel free to submit any issues or pull requests (labelled with an appropriate issue)
 
 ## Future Additions
-- Add emails for errors and successful code redemptions
 - Add error handling for failed Twitter API calls, failed shift logins and code redemptions, and etc
 
 ## License
