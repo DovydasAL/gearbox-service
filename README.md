@@ -14,7 +14,7 @@ You MUST fill in:
 ```json
  "TwitterAuthentication": "API Key:API Secret Key",
  "Email": "ShiftEmail@example.com",
- "Password": "YourShiftPassword"```
+ "Password": "YourShiftPassword"
 ```
 You can fill in:
 ```json
@@ -24,6 +24,8 @@ You can fill in:
 
 With this information filled in, run the script ```install.sh```
 
+Go to your services on windows and start ```Shift Redemption Service``` and optionally start the service on launch.
+
 ## Uninstalling
 
 To uninstall the program, simply run the script ```uninstall.sh```
@@ -31,6 +33,9 @@ To uninstall the program, simply run the script ```uninstall.sh```
 ## Contributing
 Feel free to submit any issues or pull requests (labelled with an appropriate issue)
 
+## Future Additions
+- Add emails for errors and successful code redemptions
+- Add error handling for failed Twitter API calls, failed shift logins and code redemptions, and etc
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

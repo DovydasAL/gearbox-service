@@ -1,1 +1,1 @@
-sc delete GearboxService
+sc delete 'Shift Redemption Service'

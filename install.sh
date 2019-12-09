@@ -1,3 +1,3 @@
 dotnet restore
 dotnet publish -c Release -o ./publish/GearboxService
-sc.exe create GearboxService binpath= $(pwd)/publish/GearboxService/GearboxService.exe
+sc.exe create 'Shift Redemption Service' binpath= $(pwd)/publish/GearboxService/GearboxService.exe
