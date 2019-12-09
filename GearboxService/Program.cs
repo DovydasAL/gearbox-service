@@ -25,6 +25,7 @@ namespace GearboxService
                     services.AddHostedService<Worker>();
                     services.AddSingleton<ITwitterService, TwitterService>();
                     services.AddSingleton<IShiftService, ShiftService>();
+                    services.AddSingleton<IEmailService, EmailService>();
                 });
     }
 }

@@ -28,7 +28,7 @@ namespace GearboxService.Services
             _config = config;
         }
 
-        public void SubmitCodes(List<string> codes)
+        public List<RedeemResponse> SubmitCodes(List<string> codes)
         {
             var authenticityToken = GetAuthenticityToken("https://shift.gearboxsoftware.com/home");
             GetSessionCookie(authenticityToken);
@@ -44,6 +44,8 @@ namespace GearboxService.Services
                     responses.Add(SendCode(code, client).Result);
                 }
             }
+
+            return responses;
         }
 
         private async Task<RedeemResponse> SendCode(string code, HttpClient client)
