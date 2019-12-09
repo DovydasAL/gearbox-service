@@ -30,6 +30,12 @@ namespace GearboxService.Services
 
         public List<RedeemResponse> SubmitCodes(List<string> codes)
         {
+            _clientHandler = new HttpClientHandler()
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true,
+                AllowAutoRedirect = false
+            };
             var authenticityToken = GetAuthenticityToken("https://shift.gearboxsoftware.com/home");
             GetSessionCookie(authenticityToken);
             var responses = new List<RedeemResponse>();
@@ -37,8 +43,7 @@ namespace GearboxService.Services
             {
                 client.DefaultRequestHeaders.TryAddWithoutValidation("X-CSRF-Token", authenticityToken);
                 client.DefaultRequestHeaders.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Referer",
-                    "https://shift.gearboxsoftware.com/rewards");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://shift.gearboxsoftware.com/rewards");
                 foreach (var code in codes)
                 {
                     responses.Add(SendCode(code, client).Result);

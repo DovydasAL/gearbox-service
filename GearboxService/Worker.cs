@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 using GearboxService.Models;
@@ -41,9 +43,29 @@ namespace GearboxService
 
         private void Begin(object state)
         {
-            List<string> codes = _twitterService.GetCodes();
-            List<RedeemResponse> responses = _shiftService.SubmitCodes(codes);
-            _emailService.SendEmail(responses);
+            try
+            {
+                List<string> codes = _twitterService.GetCodes();
+                List<RedeemResponse> responses = _shiftService.SubmitCodes(codes);
+                _emailService.SendEmail(responses);
+            }
+            catch (Exception e)
+            {
+                MailMessage message = new MailMessage();  
+                SmtpClient smtp = new SmtpClient();  
+                message.From = new MailAddress(_config["LoggingFromEmail"]);  
+                message.To.Add(new MailAddress(_config["LoggingToEmail"]));  
+                message.Subject = "Shift Redemption Service: " + DateTime.Now.ToLongTimeString();  
+                message.IsBodyHtml = true;
+                message.Body = e.Message + "\nInner Exception:\n" + e.InnerException?.Message;  
+                smtp.Port = Int32.Parse(_config["SMTPPort"]);  
+                smtp.Host = _config["SMTPAddress"];
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;  
+                smtp.Credentials = new NetworkCredential(_config["LoggingFromEmail"], _config["LoggingFromEmailPassword"]);  
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.Send(message);
+            }
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
