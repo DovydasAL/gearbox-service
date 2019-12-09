@@ -32,7 +32,7 @@ namespace GearboxService
             _logger.LogInformation("Timed Hosted Service running.");
 
             _timer = new Timer(Begin, null, TimeSpan.Zero, 
-                TimeSpan.FromMinutes(int.Parse(_config["ScrapeInterval"])));
+                TimeSpan.FromMinutes(int.Parse(_config["ScrapeIntervalInMinutes"])));
 
             return Task.CompletedTask;
         }
